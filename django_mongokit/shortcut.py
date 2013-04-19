@@ -45,13 +45,15 @@ else:
 # differently as long as you use get_database()
 def get_database(this_connection=connection):
     if __django_12__:
-        db = this_connection[settings.DATABASES['mongodb']['NAME']]
+        name = settings.DATABASES['mongodb'].get('NAME')
+        user = settings.DATABASES['mongodb'].get('USER')
+        password = settings.DATABASES['mongodb'].get('PASSWORD')
     else:
-        db = this_connection[settings.MONGO_DATABASE_NAME]
-    try:
-        db.authenticate(settings.DATABASES['mongodb'].get('USER', ''), settings.DATABASES['mongodb'].get('PASSWORD', ''))
-    except AttributeError:
-        pass
+        name = settings.MONGO_DATABASE_NAME
+        user = settings.MONGO_DATABASE_NAME
+        password = settings.MONGO_DATABASE_NAME
+    db = this_connection[name]
+    db.authenticate(user, password)
     return db
 
 
